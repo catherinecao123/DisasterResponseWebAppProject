@@ -29,6 +29,7 @@ warnings.filterwarnings('ignore')
 # Load the data
 def load_data(database_filepath):
     """
+    This is the function to load the data
     INPUT:
 
     OUTPUT:
