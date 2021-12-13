@@ -37,14 +37,9 @@ def index():
     GenreCounts = df.groupby('genre').count()['message']
     GenreNames = list(GenreCounts.index)
 
-    # data for graph 2: message counts by category
-    category_counts = df[df.columns[4:]].sum().sort_values(ascending=False)
-    category_name = list(category_counts.index)
-
-    # data for graph 3: Genre distribution in Top 10 category
+    # data for graph 2: Genre distribution in Top 10 category
     CatesLabels = df[df.columns[4:]].sum().sort_values(ascending=False).index
     df_genre = df.groupby('genre')[CatesLabels].sum().reset_index()
-#     df_genre =df_genre.drop(columns=['genre']).rename(index={0 : 'direct', 1:'news', 2:'social'})
 
     # graphs
     graphs = [{
@@ -62,28 +57,9 @@ def index():
                 'xaxis': {
                     'title': "genre"
                 }
-#                 ,
-#                 'template': "seaborn"
             }
         },
-#         {
-#             'data': [
-#                 Bar(
-#                     x=category_name,
-#                     y=category_counts
-#                 )],
-#             'layout': {
-#                 'title': 'Distribution of Message Categories',
-#                 'yaxis': {
-#                     'title': "Count"
-#                 },
-#                 'xaxis': {
-#                     'title': "Category",
-#                     'tickangle': -40
-#                 },
-#                'template': "seaborn"
-#             }
-#         },
+        #graph 2
         {
             'data': [
                Bar(
