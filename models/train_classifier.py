@@ -1,3 +1,4 @@
+# import libraries
 import sys
 import os
 import re
@@ -15,27 +16,26 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
+# from sklearn.tree import DecisionTreeClassifier
+# from sklearn.neighbors import KNeighborsClassifier
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import classification_report
 
 import pickle
-import warnings
-warnings.filterwarnings('ignore')
+# import warnings
+# warnings.filterwarnings('ignore')
 
-# Load the data
+# load data from database
 def load_data(database_filepath):
     """
-    This is the function to load the data
-    INPUT:
-
+    read sql table and create data frame df
+    INPUT:database file path
     OUTPUT:
-    X: 
-    y: 
-    category_names:
+    X: features data frame
+    y: target data frame
+    category_names:a list of column names
     """
     engine = create_engine('sqlite:///' + database_filepath)
     table_name = os.path.basename(database_filepath).split('.')[0]
@@ -47,11 +47,11 @@ def load_data(database_filepath):
 
     return X, y, category_names
 
+#Write a tokenization function to process the text data
 def tokenize(text):
     """
-    INPUT:
-
-    OUTPUT: 
+    INPUT: text- string
+    OUTPUT: clean_token-a list of cleaned tokines
     """
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     detected_urls = re.findall(url_regex,text)
@@ -69,11 +69,11 @@ def tokenize(text):
         clean_tokens.append(clean_tok)
 
     return clean_tokens
-    
+
+#customazied feature transformer  
 class TextLengthExtractor(BaseEstimator, TransformerMixin):
     """
     """ 
-
     def sentence_length(self, text):
         return len(word_tokenize(text))
 
@@ -83,7 +83,8 @@ class TextLengthExtractor(BaseEstimator, TransformerMixin):
     def transform(self, X):        
         X_tagged = pd.Series(X).apply(self.sentence_length)
         return pd.DataFrame(X_tagged)
-
+    
+#Build a machine learning pipeline
 def build_model():
     """
     """
@@ -104,9 +105,10 @@ def build_model():
 def evaluate_model(model, X_test, y_test, category_names):
     """    
     INPUT:
-        model: 
-        X_test: 
-        y_test: 
+        model: the model to process data
+        X_test: the feature data used to test the model
+        y_test: the target data used to compare with y_pred
+        category_names: the column names used in the target columns
     OUTPUT
         Classification report and accuracy score
     """
@@ -118,13 +120,11 @@ def evaluate_model(model, X_test, y_test, category_names):
 
     # accuracy score
     accuracy = (y_pred == y_test.values).mean()
-    print('The model accuracy score is {:.3f}'.format(accuracy))
+    print('The model accuracy score is {:.2f}'.format(accuracy))
 
 def save_model(model, model_filepath):
     """ This function saves the pipeline to local disk """
-
     pickle.dump(model, open(model_filepath, 'wb'))
-
 
 def main():
     if len(sys.argv) == 3:

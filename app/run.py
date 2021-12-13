@@ -1,3 +1,4 @@
+# import libraries
 import json
 import plotly
 import pandas as pd
@@ -15,85 +16,88 @@ from sqlalchemy import create_engine
 
 import sys
 import os
+# from models folder import functions tokenize, TextLengthExtractor
 sys.path.append(
     os.path.join(os.path.dirname(__file__), "..", "models"))
-# from functions import (tokenize, TextLengthExtractor)
 from train_classifier import tokenize, TextLengthExtractor
 
 app = Flask(__name__)
-
+#load data from sql table
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterResponse', engine)
-
+#load model
 model = joblib.load("../models/classifier.pkl")
 
 @app.route('/')
 @app.route('/index')
 def index():
 
-    # extract data needed for visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    # prepare data needed for viz
+    #data for graph 1: bar chart of the number of counts in each type of genre
+    GenreCounts = df.groupby('genre').count()['message']
+    GenreNames = list(GenreCounts.index)
 
-    # message counts by category
+    # data for graph 2: message counts by category
     category_counts = df[df.columns[4:]].sum().sort_values(ascending=False)
     category_name = list(category_counts.index)
 
-    # Genre distribution in Top 10 category
-    category_lables = df[df.columns[4:]].sum().sort_values(ascending=False).index
-    df_genre = df.groupby('genre')[category_lables].sum().reset_index()
-    df_genre =df_genre.drop(columns=['genre']).rename(index={0 : 'direct', 1:'news', 2:'social'})
+    # data for graph 3: Genre distribution in Top 10 category
+    CatesLabels = df[df.columns[4:]].sum().sort_values(ascending=False).index
+    df_genre = df.groupby('genre')[CatesLabels].sum().reset_index()
+#     df_genre =df_genre.drop(columns=['genre']).rename(index={0 : 'direct', 1:'news', 2:'social'})
 
-    # create visuals
+    # graphs
     graphs = [{
+        #graph1
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=GenreNames,
+                    y=GenreCounts
                     )],
             'layout': {
                 'title': 'Distribution of Message Genres',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "# of counts"
                 },
                 'xaxis': {
-                    'title': "Genre"
-                },
-                'template': "seaborn"
+                    'title': "genre"
+                }
+#                 ,
+#                 'template': "seaborn"
             }
         },
-        {
-            'data': [
-                Bar(
-                    x=category_name,
-                    y=category_counts
-                )],
-            'layout': {
-                'title': 'Distribution of Message Categories',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Category",
-                    'tickangle': -40
-                },
-                'template': "seaborn"
-            }
-        },
+#         {
+#             'data': [
+#                 Bar(
+#                     x=category_name,
+#                     y=category_counts
+#                 )],
+#             'layout': {
+#                 'title': 'Distribution of Message Categories',
+#                 'yaxis': {
+#                     'title': "Count"
+#                 },
+#                 'xaxis': {
+#                     'title': "Category",
+#                     'tickangle': -40
+#                 },
+#                'template': "seaborn"
+#             }
+#         },
         {
             'data': [
                Bar(
-                x=category_lables[:10],
+                x=CatesLabels[:10],
                 y=df_genre.iloc[0],
                 name='Direct'
                 ),
                 Bar(
-                    x=category_lables[:10],
+                    x=CatesLabels[:10],
                     y=df_genre.iloc[1],
                     name='News'
                 ),
                 Bar(
-                    x=category_lables[:10],
+                    x=CatesLabels[:10],
                     y=df_genre.iloc[2],
                     name='Social'
                 )
@@ -107,7 +111,7 @@ def index():
                     'title': "Categories",
                     'tickangle': -40
                 },
-                'barmode': 'group'
+                'barmode': 'stack'
             }
         }
     ]
@@ -118,7 +122,6 @@ def index():
 
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
-
 
 # web page that handles user query and displays model results
 @app.route('/go')
@@ -136,7 +139,6 @@ def go():
         query=query,
         classification_result=classification_results
     )
-
 
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)
