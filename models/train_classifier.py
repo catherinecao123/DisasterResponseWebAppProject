@@ -12,20 +12,16 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 nltk.download(['punkt', 'wordnet', 'stopwords', 'averaged_perceptron_tagger'])
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-# from sklearn.tree import DecisionTreeClassifier
-# from sklearn.neighbors import KNeighborsClassifier
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import classification_report
 
 import pickle
-# import warnings
-# warnings.filterwarnings('ignore')
+
 
 # load data from database
 def load_data(database_filepath):
@@ -51,7 +47,7 @@ def load_data(database_filepath):
 def tokenize(text):
     """
     INPUT: text- string
-    OUTPUT: clean_token-a list of cleaned tokines
+    OUTPUT: clean_token - a list of cleaned tokines
     """
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     detected_urls = re.findall(url_regex,text)
@@ -84,7 +80,7 @@ class TextLengthExtractor(BaseEstimator, TransformerMixin):
         X_tagged = pd.Series(X).apply(self.sentence_length)
         return pd.DataFrame(X_tagged)
     
-#Build a machine learning pipeline
+#Build a machine learning pipeline using feature union
 def build_model():
     """
     """
@@ -102,6 +98,7 @@ def build_model():
 
     return model
 
+#Evaluate the model
 def evaluate_model(model, X_test, y_test, category_names):
     """    
     INPUT:
@@ -112,16 +109,17 @@ def evaluate_model(model, X_test, y_test, category_names):
     OUTPUT
         Classification report and accuracy score
     """
-    # predict
+    # predict the target using the portion of test data
     y_pred = model.predict(X_test)
 
     # classification report
     print(classification_report(y_test.values, y_pred, target_names=category_names))
 
-    # accuracy score
+    # calcualte the accuracy score
     accuracy = (y_pred == y_test.values).mean()
     print('The model accuracy score is {:.2f}'.format(accuracy))
 
+#save the model to the file path
 def save_model(model, model_filepath):
     """ This function saves the pipeline to local disk """
     pickle.dump(model, open(model_filepath, 'wb'))

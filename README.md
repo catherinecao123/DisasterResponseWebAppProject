@@ -14,7 +14,7 @@
 <p>There are three components that included to complete this project.</p>
 <dl>
  <dt>1. ETL Pipeline</dt>
-  <dd>In a Python script, process_data.py, write a data cleaning pipeline that:
+  <dd>In the data folder, a Python script, process_data.py, write a data cleaning pipeline that:
     <ul>
       <li>Loads the messages and categories datasets</li>
       <li>Merges the two datasets</li>
@@ -23,7 +23,7 @@
     </ul>
   </dd>
 <dt>2. ML Pipeline</dt>
-  <dd>In a Python script, train_classifier.py, write a machine learning pipeline that:
+  <dd>In the models folder, a Python script, train_classifier.py, write a machine learning pipeline that:
     <ul>
       <li>Loads data from the SQLite database</li>
       <li>Splits the dataset into training and test sets</li>
@@ -34,7 +34,7 @@
    </ul>
   </dd>
 <dt>3. Flask Web App</dt>
-<dd> Some Flask sample codes are provided from Udacity DS degree class, by add extra features depending on personal knowledge of flask, html, css and javascript. In this part, in the python script, run.py:
+<dd> Some Flask sample codes are provided from Udacity DS degree class, by add extra features depending on personal knowledge of flask, html, css and javascript. In this part, in the app folder, a python script, run.py:
   <ul>
     <li>Modify file paths for database and model as needed</li>
     <li>Add data visualizations using Plotly in the web app.</li>
@@ -55,6 +55,7 @@
     <dd>`python run.py`</dd>
    <br>
 <dt>3. Go to http://0.0.0.0:3001/ to visulize the web app </dt>
+    <dd>use `env | grep WORK` to check the working environment </dd>
     <dd>http://view6914b2f4-3001.udacity-student-workspaces.com</dd>
 </dl>
 

@@ -1,4 +1,4 @@
-#import all the libraries
+#import the libraries
 import sys
 import os
 import numpy as np
@@ -21,7 +21,7 @@ def load_data(messages_filepath, categories_filepath):
 def clean_data(df):
     """
     INPUT: data frame df
-    OUTPUT: data frame df
+    OUTPUT: cleaned data frame df
     
     - Split the values in the categories column on the ; character so that each value becomes a separate column,set               expand=True.
     - Use the first row of categories dataframe to create column names for the categories data.
@@ -57,7 +57,7 @@ def clean_data(df):
 def save_data(df, database_filename):
     """
     INPUT: data frame df, database filename
-    OUTPUT:
+    OUTPUT: a sql table saved in the database
     None
     """
     engine = create_engine('sqlite:///'+ database_filename)

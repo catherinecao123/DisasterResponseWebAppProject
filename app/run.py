@@ -4,7 +4,6 @@ import plotly
 import pandas as pd
 
 from nltk.stem import WordNetLemmatizer
-
 from nltk.tokenize import word_tokenize
 from sklearn.base import BaseEstimator, TransformerMixin
 from nltk.stem import PorterStemmer
@@ -30,14 +29,14 @@ model = joblib.load("../models/classifier.pkl")
 
 @app.route('/')
 @app.route('/index')
-def index():
 
+def index():
     # prepare data needed for viz
     #data for graph 1: bar chart of the number of counts in each type of genre
     GenreCounts = df.groupby('genre').count()['message']
     GenreNames = list(GenreCounts.index)
 
-    # data for graph 2: Genre distribution in Top 10 category
+    # data for graph 2: Genre distribution in the 36 categories
     CatesLabels = df[df.columns[4:]].sum().sort_values(ascending=False).index
     df_genre = df.groupby('genre')[CatesLabels].sum().reset_index()
 
@@ -63,25 +62,25 @@ def index():
         {
             'data': [
                Bar(
-                x=CatesLabels[:10],
+                x=CatesLabels,
                 y=df_genre.iloc[0],
                 name='Direct'
                 ),
                 Bar(
-                    x=CatesLabels[:10],
+                    x=CatesLabels,
                     y=df_genre.iloc[1],
                     name='News'
                 ),
                 Bar(
-                    x=CatesLabels[:10],
+                    x=CatesLabels,
                     y=df_genre.iloc[2],
                     name='Social'
                 )
             ],
             'layout': {
-                'title': 'Distribution of Messages in Top 10 Categories',
+                'title': 'Number of Message Types in each Categories',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "# of count"
                 },
                 'xaxis': {
                     'title': "Categories",
