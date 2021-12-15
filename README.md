@@ -7,7 +7,7 @@
 
 <p>The project will include a web app where an emergency worker can input a new message and get classification results in several categories. The web app will also display visualizations of the data. This project will show off software skills, including the ability to create basic data pipelines and write clean, organized code!<br></p>
 
-<p>Below are a few screenshots of the web app.</p><br>
+<p>Below is a screenshot of the web app.</p><br>
 <img src="disasterapp_example.png" alt="DisasterResponseAppExample">
 
 ### Project Components
