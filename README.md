@@ -53,6 +53,7 @@
     <dd>`python run.py`</dd>
   <dt>3. Go to http://0.0.0.0:3001/ to visulize the web app </dt>
     <dd>use `env | grep WORK` to check the working environment </dd>
-    <dd>http://view6914b2f4-3001.udacity-student-workspaces.com</dd>
+    <dd>after running the above commands, go the site to check out the app:
+        http://view6914b2f4-3001.udacity-student-workspaces.com</dd>
 </dl>
 
