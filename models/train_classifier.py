@@ -22,7 +22,6 @@ from sklearn.metrics import classification_report
 
 import pickle
 
-
 # load data from database
 def load_data(database_filepath):
     """
