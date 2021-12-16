@@ -9,6 +9,7 @@
 
 <p>Below is a screenshot of the web app.</p><br>
 <img src="disasterapp_example.png" alt="DisasterResponseAppExample">
+<img src="stackbarchart.png" alt="DisasterResponseAppExample">
 
 ### Project Components
 <p>There are three components that included to complete this project.</p>
