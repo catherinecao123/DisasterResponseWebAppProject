@@ -69,6 +69,9 @@ def tokenize(text):
 #customazied feature transformer  
 class TextLengthExtractor(BaseEstimator, TransformerMixin):
     """
+    create a custom transformer to get the features of the length of the text
+    INPUT: BaseEstimator, TransformerMixin
+    OUTPUT: pandas data frame X_tagged - length of the tokenized sentence
     """ 
     def sentence_length(self, text):
         return len(word_tokenize(text))
@@ -76,16 +79,20 @@ class TextLengthExtractor(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X):        
+    def transform(self, X):  
+        # apply sentence_length function to all value in X
         X_tagged = pd.Series(X).apply(self.sentence_length)
         return pd.DataFrame(X_tagged)
     
 #Build a machine learning pipeline using feature union
 def build_model():
     """
+    build a machine learning pipleline using feature union to extract two different features
+    INPUT: none
+    OUTPUT: a pipeline with CountVectorizer, tfidf and TextLength features
     """
     # instantiate the pipeline
-    model = Pipeline([
+    pipeline = Pipeline([
     ('features',FeatureUnion([
         ('text_pipeline',Pipeline([
             ('vect',CountVectorizer(tokenizer=tokenize)),
@@ -95,7 +102,12 @@ def build_model():
         ])),
     ('clf',MultiOutputClassifier(RandomForestClassifier()))
     ])
-
+    # create grid search parameters, note: more parameters to set, longer model running time
+    parameters = { 'clf__estimator__n_estimators': [50, 100], 
+                   'clf__min_samples_split': [2, 3]
+                 }
+    # create grid search object
+    model = GridSearchCV(pipeline, param_grid=parameters, scoring='recall_micro')
     return model
 
 #Evaluate the model
